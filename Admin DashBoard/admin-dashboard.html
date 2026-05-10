@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | JobNexis</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f9ff;
+      color: #333;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 230px;
+      background-color: #0a3d62;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 10px;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #60a5fa;
+      font-size: 20px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      flex-grow: 1;
+    }
+
+    .sidebar ul li {
+      padding: 12px 14px;
+      margin: 6px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+
+    .sidebar ul li.active,
+    .sidebar ul li:hover {
+      background-color: #1e56a0;
+      color: #fff;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+
+    .logout-btn {
+      background-color: #2563eb;
+      color: #fff;
+      text-align: center;
+      padding: 12px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+      margin-top: auto;
+    }
+
+    .logout-btn:hover {
+      background-color: #1d4ed8;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+    }
+
+    .section {
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== CARDS ===== */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .card h3 {
+      color: #1e56a0;
+      margin-bottom: 10px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      background-color: #1e56a0;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #154c8a;
+    }
+
+    /* ===== ACTIVITY SECTION ===== */
+    .activity {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    .activity h4 {
+      color: #1e56a0;
+      margin-bottom: 10px;
+    }
+
+    .activity-item {
+      margin: 6px 0;
+    }
+
+    /* ===== NOTICEBOARD ===== */
+    .noticeboard {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+      position: relative;
+    }
+
+    .noticeboard h4 {
+      color: #1e56a0;
+      margin-bottom: 10px;
+    }
+
+    .add-btn-top {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+
+    .notice {
+      border-left: 4px solid #1e56a0;
+      padding: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notice-title {
+      font-weight: 500;
+    }
+
+    .notice-actions button {
+      margin-left: 6px;
+      padding: 5px 10px;
+      font-size: 13px;
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 420px;
+      max-width: 90%;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content h3 {
+      color: #1e56a0;
+      margin-bottom: 15px;
+    }
+
+    .modal-content input,
+    .modal-content textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .modal-actions {
+      text-align: right;
+    }
+
+    /* ===== CONFIRMATION POPUPS ===== */
+    .confirm-box {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      z-index: 1100;
+      width: 320px;
+    }
+
+    .confirm-box h4 {
+      margin-bottom: 15px;
+      color: #1e56a0;
+    }
+
+    .confirm-box .btn {
+      margin: 0 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== SIDEBAR ===== -->
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li class="active"><a href="admin-dashboard.html" style="color:white; text-decoration:none;">Dashboard</a></li>
+      <li><a href="admin-student.html" style="color:white; text-decoration:none;">Students</a></li>
+      <li><a href="admin-recruiter.html" style="color:white; text-decoration:none;">Recruiters</a></li>
+      <li><a href="admin-reports.html" style="color:white; text-decoration:none;">Reports</a></li>
+      <li><a href="admin-profile.html" style="color:white; text-decoration:none;">Admin Profile</a></li>
+    </ul>
+    <div class="logout-btn" id="logoutBtn">Logout</div>
+  </div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="main">
+    <div id="dashboard" class="section active">
+      <h2>Dashboard Overview</h2>
+
+      <!-- Dashboard Cards -->
+      <div class="cards">
+        <div class="card"><h3>Registered Students</h3><p>124</p></div>
+        <div class="card"><h3>Verified Students</h3><p>98</p></div>
+        <div class="card"><h3>Recruiters</h3><p>12</p></div>
+        <div class="card"><h3>Posted Jobs</h3><p>45</p></div>
+        <div class="card"><h3>Hired Students</h3><p>32</p></div>
+      </div>
+
+      <!-- Recent Activities -->
+      <div class="activity">
+        <h4>Recent Activities</h4>
+        <div class="activity-item">🎓 New student "Arjun Mehta" registered.</div>
+        <div class="activity-item">🏢 Recruiter "TechNova Pvt Ltd" posted a new job.</div>
+        <div class="activity-item">✅ Student "Priya Sharma" verified by admin.</div>
+      </div>
+
+      <!-- Noticeboard -->
+      <div class="noticeboard">
+        <h4>Noticeboard</h4>
+        <button class="btn add-btn-top" id="addNoticeBtn">+ Add Notice</button>
+        <div id="noticeList">
+          <div class="notice">
+            <span class="notice-title">Campus Drive by Infosys on 20th Oct 2025</span>
+            <div class="notice-actions">
+              <button class="btn">View PDF</button>
+              <button class="btn edit-btn">Edit</button>
+              <button class="btn delete-btn" style="background:#dc2626;">Delete</button>
+            </div>
+          </div>
+
+          <div class="notice">
+            <span class="notice-title">Resume Workshop for Final Years on 18th Oct 2025</span>
+            <div class="notice-actions">
+              <button class="btn">View PDF</button>
+              <button class="btn edit-btn">Edit</button>
+              <button class="btn delete-btn" style="background:#dc2626;">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== NOTICE MODAL ===== -->
+  <div class="modal" id="noticeModal">
+    <div class="modal-content">
+      <h3 id="modalTitle">Add Notice</h3>
+      <input type="text" id="noticeTitle" placeholder="Notice Title" />
+      <textarea id="noticeDesc" rows="4" placeholder="Notice Description"></textarea>
+      <input type="file" id="noticeFile" accept=".pdf" />
+      <div class="modal-actions">
+        <button class="btn" id="saveNotice">Save</button>
+        <button class="btn" id="cancelNotice" style="background:#dc2626;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DELETE CONFIRM ===== -->
+  <div class="confirm-box" id="deleteConfirmBox">
+    <h4>Are you sure you want to delete this notice?</h4>
+    <button class="btn" id="confirmDeleteBtn" style="background:#dc2626;">Delete</button>
+    <button class="btn" id="cancelDeleteBtn">Cancel</button>
+  </div>
+
+  <!-- ===== LOGOUT CONFIRM ===== -->
+  <div class="confirm-box" id="logoutConfirmBox">
+    <h4>Are you sure you want to log out?</h4>
+    <button class="btn" id="confirmLogoutBtn" style="background:#dc2626;">Logout</button>
+    <button class="btn" id="cancelLogoutBtn">Cancel</button>
+  </div>
+
+  <script>
+    // ===== Logout Confirmation =====
+    const logoutBtn = document.getElementById('logoutBtn');
+    const logoutBox = document.getElementById('logoutConfirmBox');
+    const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+    const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+
+    logoutBtn.addEventListener('click', () => {
+      logoutBox.style.display = 'block';
+    });
+
+    confirmLogoutBtn.addEventListener('click', () => {
+      window.location.href = "login.html";
+    });
+
+    cancelLogoutBtn.addEventListener('click', () => {
+      logoutBox.style.display = 'none';
+    });
+
+    // ===== Notice modal functionality =====
+    const addBtn = document.getElementById('addNoticeBtn');
+    const modal = document.getElementById('noticeModal');
+    const cancelBtn = document.getElementById('cancelNotice');
+    const saveBtn = document.getElementById('saveNotice');
+    const modalTitle = document.getElementById('modalTitle');
+    const noticeTitleInput = document.getElementById('noticeTitle');
+    const noticeDescInput = document.getElementById('noticeDesc');
+    let editingNotice = null;
+
+    const deleteBox = document.getElementById('deleteConfirmBox');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    let noticeToDelete = null;
+
+    addBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+      modalTitle.textContent = 'Add Notice';
+      noticeTitleInput.value = '';
+      noticeDescInput.value = '';
+      editingNotice = null;
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    saveBtn.addEventListener('click', () => {
+      const title = noticeTitleInput.value.trim();
+      if (title === '') return alert('Please enter a notice title');
+      if (editingNotice) {
+        editingNotice.querySelector('.notice-title').textContent = title;
+      } else {
+        const noticeList = document.getElementById('noticeList');
+        const newNotice = document.createElement('div');
+        newNotice.classList.add('notice');
+        newNotice.innerHTML = `
+          <span class="notice-title">${title}</span>
+          <div class="notice-actions">
+            <button class="btn">View PDF</button>
+            <button class="btn edit-btn">Edit</button>
+            <button class="btn delete-btn" style="background:#dc2626;">Delete</button>
+          </div>`;
+        noticeList.appendChild(newNotice);
+        addEditDeleteListeners(newNotice);
+      }
+      modal.style.display = 'none';
+    });
+
+    function addEditDeleteListeners(notice) {
+      const editBtn = notice.querySelector('.edit-btn');
+      const deleteBtn = notice.querySelector('.delete-btn');
+
+      editBtn.addEventListener('click', () => {
+        editingNotice = notice;
+        modal.style.display = 'flex';
+        modalTitle.textContent = 'Edit Notice';
+        noticeTitleInput.value = notice.querySelector('.notice-title').textContent;
+      });
+
+      deleteBtn.addEventListener('click', () => {
+        noticeToDelete = notice;
+        deleteBox.style.display = 'block';
+      });
+    }
+
+    confirmDeleteBtn.addEventListener('click', () => {
+      if (noticeToDelete) {
+        noticeToDelete.remove();
+        noticeToDelete = null;
+      }
+      deleteBox.style.display = 'none';
+    });
+
+    cancelDeleteBtn.addEventListener('click', () => {
+      deleteBox.style.display = 'none';
+      noticeToDelete = null;
+    });
+
+    document.querySelectorAll('.notice').forEach(addEditDeleteListeners);
+  </script>
+</body>
+</html>

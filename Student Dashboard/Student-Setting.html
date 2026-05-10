@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings | Student Dashboard</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f9ff;
+      color: #8e8194;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    nav {
+      width: 250px;
+      background: #0a3d62;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      margin: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 12px 15px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      color: white;
+    }
+
+    nav ul li:hover {
+      background: #154c8a;
+    }
+
+    nav ul li.active {
+      background: #1e56a0;
+      color: #60a5fa;
+    }
+
+    nav ul li.logout {
+      margin-top: auto;
+      background: #2563eb;
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      border-radius: 6px;
+      width: 150px;
+      margin: 20px auto;
+      padding: 8px 0;
+      font-size: 14px;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    nav ul li.logout:hover {
+      background: #154c8a;
+    }
+
+    /* Main Section */
+    main {
+      flex: 1;
+      padding: 40px 60px;
+      overflow-y: auto;
+    }
+
+    h2 {
+      color: #154c8a;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    /* Notification Switch */
+    .label-text {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+      margin-left: 15px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 30px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4caf50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(30px);
+    }
+
+    .status {
+      margin-left: 10px;
+      font-size: 16px;
+    }
+
+    /* Change Buttons Layout */
+    .change {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      margin-top: 20px;
+    }
+
+    .change button {
+      background: #1e56a0;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .change button:hover {
+      background: #154c8a;
+    }
+
+    /* Password/Email Modal */
+    .pwd-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .pwd-overlay.show {
+      display: flex;
+    }
+
+    .pwd-modal {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      width: 400px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .pwd-modal h2 {
+      color: #154c8a;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .pwd-modal input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .pwd-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn-blue {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-red {
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li onclick="window.location.href='Student-DashBoard.html'">Dashboard</li>
+        <li onclick="window.location.href='Student-Profile.html'">Profile</li>
+        <li onclick="window.location.href='job.html'">Job Portal</li>
+        <li class="active">Settings</li>
+        <li class="logout" id="logoutBtn">Logout</li>
+      </ul>
+    </nav>
+
+    <main>
+      <h2>Settings</h2>
+      <div>
+        <span class="label-text">Allow Notifications:</span>
+        <label class="switch">
+          <input type="checkbox" id="notifySwitch">
+          <span class="slider"></span>
+        </label>
+        <span class="status" id="statusText">OFF 🔕</span>
+      </div>
+
+      <div class="change">
+        <label>Change Password:</label>
+        <button id="openChangePwd">Change</button>
+      </div>
+
+      <div class="change">
+        <label>Change Gmail:</label>
+        <button id="openChangeEmail">Change</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div class="pwd-overlay" id="pwdOverlay">
+    <div class="pwd-modal">
+      <h2>Change Password</h2>
+      <input type="password" id="oldPwd" placeholder="Old Password" />
+      <input type="password" id="newPwd" placeholder="New Password" />
+      <input type="password" id="confirmPwd" placeholder="Confirm New Password" />
+      <div class="pwd-actions">
+        <button class="btn-blue" id="updatePwdBtn">Update Password</button>
+        <button class="btn-red" id="cancelPwdBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Email Modal -->
+  <div class="pwd-overlay" id="emailOverlay">
+    <div class="pwd-modal">
+      <h2>Change Gmail</h2>
+      <input type="email" id="oldEmail" placeholder="Old Gmail" />
+      <input type="email" id="newEmail" placeholder="New Gmail" />
+      <input type="email" id="confirmEmail" placeholder="Confirm New Gmail" />
+      <div class="pwd-actions">
+        <button class="btn-blue" id="updateEmailBtn">Update Email</button>
+        <button class="btn-red" id="cancelEmailBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Notification Toggle
+    const toggle = document.getElementById("notifySwitch");
+    const statusText = document.getElementById("statusText");
+    toggle.addEventListener("change", () => {
+      statusText.textContent = toggle.checked ? "ON 🔔" : "OFF 🔕";
+    });
+
+    // Password Modal Logic
+    const openPwdBtn = document.getElementById("openChangePwd");
+    const pwdOverlay = document.getElementById("pwdOverlay");
+    const cancelPwdBtn = document.getElementById("cancelPwdBtn");
+    const updatePwdBtn = document.getElementById("updatePwdBtn");
+
+    openPwdBtn.addEventListener("click", () => pwdOverlay.classList.add("show"));
+    cancelPwdBtn.addEventListener("click", () => pwdOverlay.classList.remove("show"));
+    pwdOverlay.addEventListener("click", (e) => { if (e.target === pwdOverlay) pwdOverlay.classList.remove("show"); });
+
+    updatePwdBtn.addEventListener("click", () => {
+      const oldPwd = document.getElementById("oldPwd").value.trim();
+      const newPwd = document.getElementById("newPwd").value.trim();
+      const confirmPwd = document.getElementById("confirmPwd").value.trim();
+
+      if (!oldPwd || !newPwd || !confirmPwd) {
+        alert("Please fill in all fields!");
+        return;
+      }
+      if (newPwd !== confirmPwd) {
+        alert("Passwords do not match!");
+        return;
+      }
+      alert("✅ Password changed successfully!");
+      pwdOverlay.classList.remove("show");
+      document.getElementById("oldPwd").value = "";
+      document.getElementById("newPwd").value = "";
+      document.getElementById("confirmPwd").value = "";
+    });
+
+    // Email Modal Logic
+    const openEmailBtn = document.getElementById("openChangeEmail");
+    const emailOverlay = document.getElementById("emailOverlay");
+    const cancelEmailBtn = document.getElementById("cancelEmailBtn");
+    const updateEmailBtn = document.getElementById("updateEmailBtn");
+
+    openEmailBtn.addEventListener("click", () => emailOverlay.classList.add("show"));
+    cancelEmailBtn.addEventListener("click", () => emailOverlay.classList.remove("show"));
+    emailOverlay.addEventListener("click", (e) => { if (e.target === emailOverlay) emailOverlay.classList.remove("show"); });
+
+    updateEmailBtn.addEventListener("click", () => {
+      const oldEmail = document.getElementById("oldEmail").value.trim();
+      const newEmail = document.getElementById("newEmail").value.trim();
+      const confirmEmail = document.getElementById("confirmEmail").value.trim();
+
+      if (!oldEmail || !newEmail || !confirmEmail) {
+        alert("Please fill in all fields!");
+        return;
+      }
+      if (newEmail !== confirmEmail) {
+        alert("Email addresses do not match!");
+        return;
+      }
+      alert("✅ Email changed successfully!");
+      emailOverlay.classList.remove("show");
+      document.getElementById("oldEmail").value = "";
+      document.getElementById("newEmail").value = "";
+      document.getElementById("confirmEmail").value = "";
+    });
+
+    // Logout Popup
+    const logoutBtn = document.getElementById("logoutBtn");
+    logoutBtn.addEventListener("click", () => {
+      if (confirm("Are you sure you want to logout?")) {
+        alert("✅ You have been logged out successfully!");
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+</html>

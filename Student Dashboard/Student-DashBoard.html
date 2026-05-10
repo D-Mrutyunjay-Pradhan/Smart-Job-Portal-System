@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f9ff;
+      color: #8e8194;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    nav {
+      width: 250px;
+      background: #0a3d62;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      margin: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 12px 15px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      color: white;
+    }
+
+    nav ul li:hover {
+      background: #154c8a;
+    }
+
+    nav ul li.active {
+      background: #1e56a0;
+      color: #60a5fa;
+    }
+
+    nav ul li.logout {
+      margin-top: auto;
+      background: #2563eb;
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      border-radius: 6px;
+      width: 150px;
+      margin: 20px auto;
+      padding: 8px 0;
+      font-size: 14px;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    nav ul li.logout:hover {
+      background: #154c8a;
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      padding: 40px 60px;
+      overflow-y: auto;
+    }
+
+    h2 {
+      color: #154c8a;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Dashboard Top Button */
+    .dashboard-top {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 15px;
+    }
+
+    #openTalkAdmin {
+      background: #1e56a0;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    #openTalkAdmin:hover {
+      background: #154c8a;
+    }
+
+    /* Notice Board */
+    .notice-board {
+      width: 100%;
+      max-width: 700px;
+      margin: 30px auto;
+      background: #f8fafc;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      height: 220px;
+      position: relative;
+    }
+
+    .notice {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: #fff;
+      margin: 10px;
+      padding: 12px 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .notice:hover {
+      transform: scale(1.02);
+    }
+
+    .date {
+      background: #1e56a0;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .new-tag {
+      background: red;
+      color: #fff;
+      font-size: 10px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-left: 5px;
+    }
+
+    .notice-board .notice {
+      animation: scrollUp 10s linear infinite;
+    }
+
+    @keyframes scrollUp {
+      0% { transform: translateY(100%); }
+      100% { transform: translateY(-400%); }
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 350px;
+      text-align: center;
+    }
+
+    .modal h3 {
+      margin-bottom: 20px;
+    }
+
+    .modal input, .modal textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .modal button {
+      margin: 10px;
+      width: 100px;
+      font-weight: 600;
+    }
+
+    .cancel-btn {
+      background: #e5e7eb;
+    }
+
+    .confirm-btn {
+      background: #1e56a0;
+      color: #fff;
+    }
+
+    .cancel-btn:hover {
+      background: #d1d5db;
+    }
+
+    .confirm-btn:hover {
+      background: #154c8a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li class="active">Dashboard</li>
+        <li onclick="window.location.href='Student-Profile.html'">Profile</li>
+        <li onclick="window.location.href='job.html'">Job Portal</li>
+        <li onclick="window.location.href='Student-Setting.html'">Settings</li>
+        <li class="logout" id="logoutBtn">Logout</li>
+      </ul>
+    </nav>
+
+    <main>
+      <div class="dashboard-top">
+        <button id="openTalkAdmin">Talk to Admin</button>
+      </div>
+
+      <h2>Notice Board</h2>
+
+      <div class="notice-board">
+        <div class="notice" onclick="openPDF('hackathon.pdf')">
+          <span class="date">06/08/2025</span>
+          <span class="text">Hackathon Event <span class="new-tag">new</span></span>
+        </div>
+        <div class="notice" onclick="openPDF('B.TECH 07TH SEMESTER BPUT EXAM SCHEDULE.pdf')">
+          <span class="date">24/11/2025</span>
+          <span class="text">B.TECH 07TH SEMESTER STUDENT BPUT EXAM SCHEDULE <span class="new-tag">new</span></span>
+        </div>
+        <div class="notice" onclick="openPDF('Campus Drive of THINK 41 company Btech 2026.pdf')">
+          <span class="date">08/11/2025</span>
+          <span class="text">Campus Drive of THINK 41 company for B-Tech & MCA students<span class="new-tag">new</span></span>
+        </div>
+        <div class="notice" onclick="openPDF('PROJECT REVIEW3 NOTICE.docx.pdf')">
+          <span class="date">04/11/2025</span>
+          <span class="text">B.TECH 4th YEAR STUDENT PROJECT REVIEW NOTICE<span class="new-tag">new</span></span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Talk to Admin Popup -->
+  <div class="modal-overlay" id="talkAdminModal">
+    <div class="modal">
+      <h3>Talk to Admin</h3>
+      <form>
+        <label>Subject:</label>
+        <input type="text" placeholder="Enter subject" required>
+        <label>Message:</label>
+        <textarea placeholder="Write your message here" required></textarea>
+        <button type="submit" class="confirm-btn">Send</button>
+        <button type="button" class="cancel-btn" id="cancelTalkAdmin">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openPDF(filePath) {
+      window.open(filePath, '_blank');
+    }
+
+    const openTalkAdmin = document.getElementById("openTalkAdmin");
+    const talkAdminModal = document.getElementById("talkAdminModal");
+    const cancelTalkAdmin = document.getElementById("cancelTalkAdmin");
+
+    openTalkAdmin.addEventListener("click", () => {
+      talkAdminModal.style.display = "flex";
+    });
+
+    cancelTalkAdmin.addEventListener("click", () => {
+      talkAdminModal.style.display = "none";
+    });
+
+    talkAdminModal.addEventListener("click", (e) => {
+      if (e.target === talkAdminModal) talkAdminModal.style.display = "none";
+    });
+  </script>
+</body>
+</html>

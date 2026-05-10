@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobNexis | Job Portal</title>
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: aliceblue;
+  color: #333;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background:#253a58;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+}
+  .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 55px;
+  height: 55px;
+  margin-right: 10px;
+}
+
+.nav-title h3 {
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+}
+
+.nav-title p {
+  font-size: 8px;
+  color: whitesmoke;
+}
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-links a,
+    .dropdown button {
+      color: white;
+      text-decoration: none;
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover,
+    .dropdown button:hover {
+      text-decoration: underline;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      min-width: 180px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 6px;
+    }
+
+    .dropdown-content a {
+      color: #0d47a1;
+      padding: 10px 14px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Profile dropdown */
+    .profile {
+      position: relative;
+      display: inline-block;
+    }
+
+    .profile-btn {
+      background-color: white;
+      color: #a41c2c;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .profile-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: white;
+      min-width: 160px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      z-index: 1;
+    }
+
+    .profile-content a {
+      color: #0d47a1;
+      padding: 10px 14px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .profile-content a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .profile:hover .profile-content {
+      display: block;
+    }
+
+    /* Container */
+    .container {
+      padding: 20px 40px;
+    }
+
+    /* Job Section Layout */
+    .job-section {
+      display: flex;
+      gap: 25px;
+    }
+
+    /* Left box (job list) narrower and scrollable */
+    .job-list {
+      flex: 0.8;
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      height: 80vh;
+      overflow-y: auto;
+      position: sticky;
+      top: 20px;
+    }
+
+    /* Right box (job details) */
+    .job-details {
+      flex: 2.2;
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      min-height: 80vh;
+      overflow-y: auto;
+    }
+
+    /* Job card */
+    .job-card {
+      padding: 14px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .job-card:hover {
+      background-color: #f0f4ff;
+    }
+
+    .job-card.active {
+      background-color: #e3f2fd;
+      border-left: 4px solid #0d47a1;
+      box-shadow: 0 0 5px rgba(13, 71, 161, 0.4);
+    }
+
+    .job-card h3 {
+      margin: 0;
+      color: #a41c2c;
+    }
+
+    .job-card p {
+      margin: 4px 0;
+      color: #555;
+    }
+
+    /* Application Status Table */
+    .status-section {
+      display: none;
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 14px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0d47a1;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f0f4ff;
+    }
+
+    td.job-link {
+      color: #0d47a1;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Apply Button */
+    .apply-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #0d47a1;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .apply-btn.applied {
+      background-color: gray;
+      cursor: not-allowed;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px 30px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal h3 {
+      color: #0d47a1;
+      margin-top: 0;
+    }
+
+    .modal input[type="text"],
+    .modal input[type="email"],
+    .modal input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .modal button {
+      background-color: #0d47a1;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .modal .close-btn {
+      background-color: #999;
+      float: right;
+    }
+
+    .modal .close-btn:hover {
+      background-color: #777;
+    }
+  </style>
+</head>
+<body>
+   <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-left">
+    <img src="logo.png" alt="logo" class="logo">
+      <div class="nav-title">
+        <h3>JobNexis</h3>
+        <p>Training & Placement</p>
+      </div>
+    </div> 
+    <div class="nav-links">
+     <a href="C:\Users\mruty\Desktop\JobNexis\Code\Frontend\Home.html">Home</a>
+    <div class="dropdown">
+        <button>Jobs ▼</button>
+        <div class="dropdown-content">
+          <a href="#" onclick="showSection('jobs')">All Jobs</a>
+          <a href="#" onclick="showSection('status')">Application Status</a>
+        </div>
+      </div>
+    <!-- Removed 'About' link -->
+      <a href="C:\Users\mruty\Desktop\JobNexis\Code\Frontend\Contact Us.html">Contact</a>
+    </div>
+    <div class="profile">
+      <button class="profile-btn">BK</button>
+      <div class="profile-content">
+        <a href="#">Profile</a>
+        <a href="#">Logout</a>
+      </div>
+    </div>
+  </div>
+  </header>
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Jobs Section -->
+    <div id="jobsSection" class="job-section">
+      <div class="job-list" id="jobList">
+        <div class="job-card" onclick="showJobDetails(this, 'Software Engineer', 'TechCorp', 'Bhubaneswar', 'Full-time', '₹6 LPA', 'Develop and maintain web applications using React and Node.js.')">
+          <h3>Software Engineer</h3>
+          <p>TechCorp Pvt Ltd</p>
+          <p>Bhubaneswar | ₹6 LPA</p>
+        </div>
+        <div class="job-card" onclick="showJobDetails(this, 'Cyber Security Analyst', 'SecureNet', 'Bangalore', 'Full-time', '₹8 LPA', 'Monitor, analyze, and respond to network security threats.')">
+          <h3>Cyber Security Analyst</h3>
+          <p>SecureNet</p>
+          <p>Bangalore | ₹8 LPA</p>
+        </div>
+        <div class="job-card" onclick="showJobDetails(this, 'Java Developer', 'CodeWave', 'Hyderabad', 'Full-time', '₹7 LPA', 'Design and build scalable Java applications.')">
+          <h3>Java Developer</h3>
+          <p>CodeWave</p>
+          <p>Hyderabad | ₹7 LPA</p>
+        </div>
+      </div>
+
+      <div class="job-details" id="jobDetails">
+        <h2>Select a job to view details</h2>
+        <p>Click on a job listing on the left to see its full details here.</p>
+      </div>
+    </div>
+
+    <!-- Application Status Section -->
+    <div id="statusSection" class="status-section">
+      <h2>Application Status</h2>
+      <table>
+        <tr>
+          <th>Job Title</th>
+          <th>Company</th>
+          <th>Status</th>
+          <th>Date Applied</th>
+        </tr>
+        <tr>
+          <td class="job-link" onclick="openJobFromStatus('Software Engineer')">Software Engineer</td>
+          <td>TechCorp Pvt Ltd</td>
+          <td style="color: green;">Selected</td>
+          <td>01-Oct-2025</td>
+        </tr>
+        <tr>
+          <td class="job-link" onclick="openJobFromStatus('Cyber Security Analyst')">Cyber Security Analyst</td>
+          <td>SecureNet</td>
+          <td style="color: orange;">Under Review</td>
+          <td>05-Oct-2025</td>
+        </tr>
+        <tr>
+          <td class="job-link" onclick="openJobFromStatus('Java Developer')">Java Developer</td>
+          <td>CodeWave</td>
+          <td style="color: red;">Rejected</td>
+          <td>09-Oct-2025</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Resume Modal -->
+  <div id="applyModal" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">X</button>
+      <h3>Confirm Your Details</h3>
+      <label>Name:</label>
+      <input type="text" id="studentName" value="Mrutyunjay Pradhan" />
+      <label>Email:</label>
+      <input type="email" id="studentEmail" value="mrutyunjay@example.com" />
+      <label>Phone:</label>
+      <input type="text" id="studentPhone" value="9876543210" />
+      <label>Resume:</label>
+      <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx" />
+      <p id="resumeMessage" style="color:green;font-size:14px;display:none;">Resume already submitted. You can resubmit if needed.</p>
+      <button onclick="submitApplication()">Submit Application</button>
+    </div>
+  </div>
+
+  <script>
+    let hasResume = false;
+    let appliedJobs = {};
+
+    function showJobDetails(selectedCard, title, company, location, type, salary, description) {
+      document.querySelectorAll('.job-card').forEach(card => card.classList.remove('active'));
+      if (selectedCard) selectedCard.classList.add('active');
+
+      const isApplied = appliedJobs[title] || false;
+
+      const details = `
+        <button id="applyBtn" class="apply-btn ${isApplied ? 'applied' : ''}" ${isApplied ? 'disabled' : ''} onclick="handleApply('${title}')">
+          ${isApplied ? '✅ Applied' : 'Apply Now'}
+        </button>
+        <h2>${title}</h2>
+        <h3>${company}</h3>
+        <p><strong>Location:</strong> ${location}</p>
+        <p><strong>Type:</strong> ${type}</p>
+        <p><strong>Salary:</strong> ${salary}</p>
+        <p><strong>Description:</strong></p>
+        <p>${description}</p>
+      `;
+      document.getElementById('jobDetails').innerHTML = details;
+    }
+
+    function handleApply(jobTitle) {
+      openModal();
+      document.getElementById('applyBtn').dataset.jobTitle = jobTitle;
+    }
+
+    function showSection(section) {
+      const jobSection = document.getElementById('jobsSection');
+      const statusSection = document.getElementById('statusSection');
+      if (section === 'jobs') {
+        jobSection.style.display = 'flex';
+        statusSection.style.display = 'none';
+      } else {
+        jobSection.style.display = 'none';
+        statusSection.style.display = 'block';
+      }
+      localStorage.setItem('activeSection', section);
+    }
+
+    function openJobFromStatus(jobTitle) {
+      showSection('jobs');
+      const jobCards = document.querySelectorAll('.job-card');
+      jobCards.forEach(card => {
+        const title = card.querySelector('h3').innerText;
+        card.classList.remove('active');
+        if (title === jobTitle) {
+          card.classList.add('active');
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          if (jobTitle === 'Software Engineer') {
+            showJobDetails(card, 'Software Engineer', 'TechCorp', 'Bhubaneswar', 'Full-time', '₹6 LPA', 'Develop and maintain web applications using React and Node.js.');
+          } else if (jobTitle === 'Cyber Security Analyst') {
+            showJobDetails(card, 'Cyber Security Analyst', 'SecureNet', 'Bangalore', 'Full-time', '₹8 LPA', 'Monitor, analyze, and respond to network security threats.');
+          } else if (jobTitle === 'Java Developer') {
+            showJobDetails(card, 'Java Developer', 'CodeWave', 'Hyderabad', 'Full-time', '₹7 LPA', 'Design and build scalable Java applications.');
+          }
+        }
+      });
+    }
+
+    function openModal() {
+      const modal = document.getElementById('applyModal');
+      modal.style.display = 'block';
+      const resumeMsg = document.getElementById('resumeMessage');
+      resumeMsg.style.display = hasResume ? 'block' : 'none';
+    }
+
+    function closeModal() {
+      document.getElementById('applyModal').style.display = 'none';
+    }
+
+    function submitApplication() {
+      const resumeInput = document.getElementById('resumeUpload');
+      const jobTitle = document.getElementById('applyBtn').dataset.jobTitle;
+
+      if (resumeInput.files.length > 0) {
+        hasResume = true;
+        appliedJobs[jobTitle] = true;
+        alert("✅ Application submitted successfully!");
+        closeModal();
+        updateApplyButton(jobTitle);
+      } else if (hasResume) {
+        appliedJobs[jobTitle] = true;
+        alert("✅ Application submitted using existing resume!");
+        closeModal();
+        updateApplyButton(jobTitle);
+      } else {
+        alert("⚠️ Please upload your resume before applying!");
+      }
+    }
+
+    function updateApplyButton(jobTitle) {
+      const applyBtn = document.getElementById('applyBtn');
+      if (applyBtn && applyBtn.dataset.jobTitle === jobTitle) {
+        applyBtn.textContent = '✅ Applied';
+        applyBtn.classList.add('applied');
+        applyBtn.disabled = true;
+      }
+    }
+
+    window.onload = function() {
+      const lastSection = localStorage.getItem('activeSection') || 'jobs';
+      showSection(lastSection);
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiting Dashboard - Job Nexis</title>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ===== GLOBAL STYLES ===== */
+        :root {
+            --primary-blue: #0a3d62; --sidebar-bg: #0a3d62; --main-bg: #F4F7FC;
+            --card-bg: #FFFFFF; --text-dark: #333333; --text-light: #777777;
+            --text-white: #FFFFFF; --border-color: #EAEAF0; --green: #5CB85C;
+            --red: #D9534F; --green-light-bg: #EAF7E9; --red-light-bg: #FBEAEC;
+            --green-dark: #4CAE4C; --red-dark: #D43F3A;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--main-bg); color: var(--text-dark); }
+        
+        /* ===== PRELOADER STYLES (THEMED) ===== */
+        .loader-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--primary-blue); 
+            display: flex;
+            flex-direction: column; 
+            justify-content: center; align-items: center;
+            z-index: 9999; opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+        .loader-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-white);
+            margin-bottom: 20px;
+        }
+        .loader-spinner {
+            width: 40px; 
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--text-white); 
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* ===== LAYOUT CONTAINER ===== */
+        .dashboard-container { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: auto 1fr; height: 100vh; }
+        .sidebar { grid-column: 1 / 2; grid-row: 1 / 3; background-color: var(--primary-blue); color: var(--text-white); padding: 20px; }
+        .sidebar-header { font-size: 24px; font-weight: bold; text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: 10px; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 15px; color: var(--text-white); text-decoration: none; font-size: 14px; font-weight: 500; padding: 12px 15px; border-radius: 8px; transition: background-color 0.3s ease; }
+        .sidebar-nav a:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .sidebar-nav li.active a { background-color: var(--text-white); color: var(--primary-blue); }
+        .sidebar-nav .material-symbols-outlined { font-size: 22px; }
+        .main-content { grid-column: 2 / 3; display: flex; flex-direction: column; overflow-y: auto; }
+        .header { grid-column: 2 / 3; display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+        .header h2 { font-size: 22px; font-weight: 600; }
+        .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; padding: 5px; transition: background-color 0.3s ease; }
+        .user-info:hover { background-color: var(--main-bg); }
+        .user-info img { width: 40px; height: 40px; border-radius: 50%; }
+        .user-info span { font-weight: 500; }
+        .user-info .material-symbols-outlined { color: var(--text-light); }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 30px; padding: 30px; }
+        .card { background-color: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        .card h3 { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+        .card-full-width { grid-column: 1 / -1; }
+        .chart-container { position: relative; height: 200px; width: 100%; margin-bottom: 20px; }
+        .chart-legend { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px; }
+        .chart-legend div { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-light); }
+        .chart-legend .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .status-list { list-style: none; display: flex; flex-direction: column; gap: 15px; }
+        .status-label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+        .status-label span:first-child { color: var(--text-light); }
+        .status-label span:last-child { font-weight: 600; }
+        .status-bar { width: 100%; height: 8px; background-color: var(--main-bg); border-radius: 4px; overflow: hidden; }
+        .status-bar .bar-fill { height: 100%; border-radius: 4px; }
+        .req-table { width: 100%; border-collapse: collapse; }
+        .req-table th, .req-table td { padding: 12px 0; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        .req-table th { color: var(--text-light); font-weight: 500; text-transform: uppercase; font-size: 12px; }
+        .req-table td:first-child { font-weight: 500; color: var(--text-dark); }
+        .req-table td:nth-child(2) { color: var(--text-light); }
+        .req-table td:last-child { text-align: right; }
+        .req-table tr:last-child td { border-bottom: none; }
+        .btn { padding: 6px 14px; border: none; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-approve { background-color: var(--green-light-bg); color: var(--green-dark); border: 1px solid var(--green); }
+        .btn-approve:hover { background-color: var(--green); color: var(--text-white); }
+        .btn-reject { background-color: var(--red-light-bg); color: var(--red-dark); border: 1px solid var(--red); margin-left: 8px; }
+        .btn-reject:hover { background-color: var(--red); color: var(--text-white); }
+        .status-approved { color: var(--green-dark); font-weight: 600; font-size: 14px; padding-right: 10px; }
+        .status-rejected { color: var(--red-dark); font-weight: 600; font-size: 14px; padding-right: 10px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; }
+        .see-all { text-decoration: none; color: var(--primary-blue); font-size: 14px; font-weight: 500; }
+        .interview-container { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; }
+        .interview-card { flex: 0 0 240px; border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; text-align: center; }
+        .interview-card img { width: 70px; height: 70px; border-radius: 50%; margin-bottom: 10px; }
+        .interview-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .interview-card p { font-size: 14px; color: var(--text-light); margin-bottom: 8px; }
+        .interview-card .role-type { font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 4px; display: inline-block; }
+        .role-type.remote { background-color: #EBF5FB; color: #3498DB; }
+        .role-type.telephonic { background-color: #E8F6F3; color: #1ABC9C; }
+        .role-type.hr { background-color: #FADBD8; color: #E74C3C; }
+        .role-type.finance { background-color: #FDF2E9; color: #E67E22; }
+        .interview-card hr { border: none; border-top: 1px solid var(--border-color); margin: 15px 0; }
+        .interview-card .location, .interview-card .time, .interview-card .phone { font-size: 13px; margin-bottom: 5px; color: var(--text-dark); font-weight: 500; }
+        .interview-card .phone { margin-bottom: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="loader-wrapper" id="loader">
+        <div class="loader-text">Job Nexis</div>
+        <div class="loader-spinner"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                Job Nexis
+            </div>
+            <ul class="sidebar-nav">
+                <li class="active"><a href="dashboard.html"><span class="material-symbols-outlined">dashboard</span> DASHBOARD</a></li>
+                <li><a href="candidates.html"><span class="material-symbols-outlined">badge</span> CANDIDATES</a></li>
+                <li><a href="jobs.html"><span class="material-symbols-outlined">work</span> JOBS</a></li>
+                  <li><a href="job-posting.html" class="active"><span class="material-symbols-outlined">edit_square</span> JOB POSTING</a></li>
+                <li><a href="reports.html"><span class="material-symbols-outlined">analytics</span> REPORTS</a></li>
+                <li><a href="calendar.html"><span class="material-symbols-outlined">calendar_month</span> CALENDAR</a></li>
+                <li><a href="settings.html"><span class="material-symbols-outlined">settings</span> SETTINGS</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="header">
+                <h2>Recruiting dashboard</h2>
+                <div class="user-info">
+                    <img src="https://i.pravatar.cc/40?img=1" alt="Davies Ruby">
+                    <span>Davies Ruby</span>
+                    <span class="material-symbols-outlined">arrow_drop_down</span>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <div class="card card-chart">
+                    <h3>Applicant source</h3>
+                    <div class="chart-container">
+                        <canvas id="applicantChart"></canvas>
+                    </div>
+                    <div class="chart-legend">
+                        <div><span class="dot" style="background-color: #5DADE2;"></span> Portal</div>
+                        <div><span class="dot" style="background-color: #AF7AC5;"></span> LinkedIn</div>
+                        <div><span class="dot" style="background-color: #E74C3C;"></span> Direct</div>
+                        <div><span class="dot" style="background-color: #F1C40F;"></span> Reference</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Current status</h3>
+                    <ul class="status-list">
+                        <li>
+                            <div class="status-label"><span>New Submission</span><span>15</span></div>
+                            <div class="status-bar"><div class="bar-fill" style="width: 25%; background-color: #5DADE2;"></div></div>
+                        </li>
+                        <li>
+                            <div class="status-label"><span>In Review</span><span>5</span></div>
+                            <div class="status-bar"><div class="bar-fill" style="width: 10%; background-color: #AF7AC5;"></div></div>
+                        </li>
+                        <li>
+                            <div class="status-label"><span>Phone Screening</span><span>3</span></div>
+                            <div class="status-bar"><div class="bar-fill" style="width: 5%; background-color: #F39C12;"></div></div>
+                        </li>
+                        <li>
+                            <div class="status-label"><span>Interview</span><span>18</span></div>
+                            <div class="status-bar"><div class="bar-fill" style="width: 30%; background-color: #E74C3C;"></div></div>
+                        </li>
+                        <li>
+                            <div class="status-label"><span>Closed</span><span>231</span></div>
+                            <div class="status-bar"><div class="bar-fill" style="width: 80%; background-color: #2ECC71;"></div></div>
+                        </li>
+                        <li>
+                            <div class="status-label"><span>Hired</span><span>110</span></div>
+                            <div class="status-bar"><div class="bar-fill" style="width: 60%; background-color: #3498DB;"></div></div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Pending requisition approval</h3>
+                    <table class="req-table">
+                        <thead><tr><th>Requisition</th><th>Date</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>Java Developer</td><td>29 Aug, 2019</td>
+                                <td><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button></td>
+                            </tr>
+                            <tr>
+                                <td>Graphic Designer</td><td>29 Aug, 2019</td>
+                                <td><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button></td>
+                            </tr>
+                            <tr>
+                                <td>.Net Developer</td><td>27 Aug, 2019</td>
+                                <td><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button></td>
+                            </tr>
+                            <tr>
+                                <td>QA Tester/Team Lead</td><td>26 Aug, 2019</td>
+                                <td><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button></td>
+                            </tr>
+                            <tr>
+                                <td>UI/UX Designer</td><td>26 Aug, 2019</td>
+                                <td><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button></td>
+                            </tr>
+                            <tr>
+                                <td>SEO Specialist</td><td>26 Aug, 2019</td>
+                                <td><button class="btn btn-approve">Approve</button><button class="btn btn-reject">Reject</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card card-full-width">
+                    <div class="card-header">
+                        <h3>Up coming interview</h3>
+                        <a href="#" class="see-all">See all</a>
+                    </div>
+                    <div class="interview-container">
+                        <div class="interview-card">
+                            <img src="https://i.pravatar.cc/150?img=11" alt="Denis Degroot">
+                            <h4>Denis Degroot</h4><p>Graphic Designer</p><p class="role-type remote">Remote</p><hr>
+                            <p class="location">Greenwich, UK</p><p class="time">05 Sep 2019  14:30</p><p class="phone">+44 125 489 6545</p>
+                        </div>
+                        <div class="interview-card">
+                            <img src="https://i.pravatar.cc/150?img=3" alt="Noah Stocker">
+                            <h4>Noah Stocker</h4><p>Java Developer</p><p class="role-type telephonic">Telephonic</p><hr>
+                            <p class="location">Barking, UK</p><p class="time">05 Sep 2019  14:30</p><p class="phone">+44 125 489 6545</p>
+                        </div>
+                        <div class="interview-card">
+                            <img src="https://i.pravatar.cc/150?img=5" alt="Alla Searle">
+                            <h4>Alla Searle</h4><p>UX Designer</p><p class="role-type hr">HR</p><hr>
+                            <p class="location">Washington, USA</p><p class="time">05 Sep 2019  14:30</p><p class="phone">+44 125 489 6545</p>
+                        </div>
+                        <div class="interview-card">
+                            <img src="https://i.pravatar.cc/150?img=8" alt="Tessa Bustle">
+                            <h4>Tessa Bustle</h4><p>SEO Expert</p><p class="role-type finance">Finance</p><hr>
+                            <p class="location">Croydon, UK</p><p class="time">05 Sep 2019  14:30</p><p class="phone">+44 125 489 6545</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // --- HIDE PRELOADER (THEMED) ---
+            const loader = document.getElementById('loader');
+            if(loader) {
+                setTimeout(() => {
+                    loader.classList.add('loader-hidden');
+                }, 100); 
+            }
+
+            // ===== APPLICANT SOURCE CHART =====
+            const ctx = document.getElementById('applicantChart').getContext('2d');
+            const centerTextPlugin = {
+                id: 'centerText',
+                afterDraw: (chart) => {
+                    const { ctx, chartArea: { width, height } } = chart;
+                    ctx.save();
+                    ctx.font = 'bold 24px sans-serif'; ctx.fillStyle = '#333333';
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText('28', width / 2, height / 2 - 10);
+                    ctx.font = '14px sans-serif'; ctx.fillStyle = '#777777';
+                    ctx.fillText('Reference', width / 2, height / 2 + 15);
+                    ctx.fillText('Applicant', width / 2, height / 2 + 35);
+                    ctx.restore();
+                }
+            };
+            const applicantChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Portal', 'LinkedIn', 'Direct', 'Reference'],
+                    datasets: [{
+                        label: 'Applicant Source', data: [45, 25, 15, 28],
+                        backgroundColor: ['#5DADE2', '#AF7AC5', '#E74C3C', '#F1C40F'],
+                        borderColor: '#FFFFFF', borderWidth: 6, hoverBorderWidth: 6,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutout: '75%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: true }, centerText: {} }
+                },
+                plugins: [centerTextPlugin]
+            });
+            
+            // --- Requisition Approve/Reject Buttons ---
+            const reqButtons = document.querySelectorAll('.req-table .btn');
+            reqButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const row = button.closest('tr');
+                    const statusCell = row.querySelector('td:last-child');
+                    if (button.classList.contains('btn-approve')) {
+                        statusCell.innerHTML = '<span class="status-approved">Approved</span>';
+                    } else {
+                        statusCell.innerHTML = '<span class="status-rejected">Rejected</span>';
+                    }
+                });
+            });
+
+            // --- "See all" interviews link ---
+            const seeAllLink = document.querySelector('.see-all');
+            if(seeAllLink) {
+                seeAllLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Simulating navigation to all interviews...');
+                });
+            }
+
+            // --- User Profile Click ---
+            const userInfo = document.querySelector('.user-info');
+            if(userInfo) {
+                userInfo.addEventListener('click', () => {
+                    alert('Simulating opening user profile settings...');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

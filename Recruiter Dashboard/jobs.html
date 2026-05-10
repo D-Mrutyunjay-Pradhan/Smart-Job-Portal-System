@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs - Job Nexis</title>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <style>
+        :root {
+            --primary-blue: #0a3d62; --sidebar-bg: 0a3d62; --main-bg: #F4F7FC;
+            --card-bg: #FFFFFF; --text-dark: #333333; --text-light: #777777;
+            --text-white: #FFFFFF; --border-color: #EAEAF0; --green: #5CB85C;
+            --red: #D9534F; --green-light-bg: #EAF7E9; --red-light-bg: #FBEAEC;
+            --green-dark: #4CAE4C; --red-dark: #D43F3A;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--main-bg); color: var(--text-dark); }
+        
+        /* ===== PRELOADER STYLES (THEMED) ===== */
+        .loader-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--primary-blue); 
+            display: flex;
+            flex-direction: column; 
+            justify-content: center; align-items: center;
+            z-index: 9999; opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+        .loader-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-white);
+            margin-bottom: 20px;
+        }
+        .loader-spinner {
+            width: 40px; 
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--text-white); 
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .dashboard-container { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: auto 1fr; height: 100vh; }
+        .sidebar { grid-column: 1 / 2; grid-row: 1 / 3; background-color: var(--primary-blue); color: var(--text-white); padding: 20px; }
+        .sidebar-header { font-size: 24px; font-weight: bold; text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li { margin-bottom: 10px; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 15px; color: var(--text-white); text-decoration: none; font-size: 14px; font-weight: 500; padding: 12px 15px; border-radius: 8px; transition: background-color 0.3s ease; }
+        .sidebar-nav a:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .sidebar-nav li.active a { background-color: var(--text-white); color: var(--primary-blue); }
+        .sidebar-nav .material-symbols-outlined { font-size: 22px; }
+        .main-content { grid-column: 2 / 3; display: flex; flex-direction: column; overflow-y: auto; }
+        .header { grid-column: 2 / 3; display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+        .header h2 { font-size: 22px; font-weight: 600; }
+        .user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; padding: 5px; transition: background-color 0.3s ease; }
+        .user-info:hover { background-color: var(--main-bg); }
+        .user-info img { width: 40px; height: 40px; border-radius: 50%; }
+        .user-info span { font-weight: 500; }
+        .user-info .material-symbols-outlined { color: var(--text-light); }
+        .content-grid { padding: 30px; }
+        .card { background-color: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        .card h3 { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+        .card-full-width { grid-column: 1 / -1; }
+        .jobs-table { width: 100%; border-collapse: collapse; }
+        .jobs-table th, .jobs-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .jobs-table th { color: var(--text-light); font-weight: 500; text-transform: uppercase; font-size: 12px; }
+        .jobs-table .job-title { font-weight: 600; color: var(--text-dark); }
+        .jobs-table .job-location { font-size: 13px; color: var(--text-light); }
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; display: inline-block; }
+        .status-badge.status-open { background-color: var(--green-light-bg); color: var(--green-dark); }
+        .status-badge.status-closed { background-color: var(--red-light-bg); color: var(--red-dark); }
+        .btn { padding: 6px 14px; border: none; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-primary-outline { background-color: #fff; color: var(--primary-blue); border: 1px solid var(--primary-blue); }
+        .btn-primary-outline:hover { background-color: var(--primary-blue); color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="loader-wrapper" id="loader">
+        <div class="loader-text">Job Nexis</div>
+        <div class="loader-spinner"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">Job Nexis</div>
+            <ul class="sidebar-nav">
+                <li class="active"><a href="dashboard.html"><span class="material-symbols-outlined">dashboard</span> DASHBOARD</a></li>
+                <li><a href="candidates.html"><span class="material-symbols-outlined">badge</span> CANDIDATES</a></li>
+                <li><a href="jobs.html"><span class="material-symbols-outlined">work</span> JOBS</a></li>
+                  <li><a href="job-posting.html" class="active"><span class="material-symbols-outlined">edit_square</span> JOB POSTING</a></li>
+                <li><a href="reports.html"><span class="material-symbols-outlined">analytics</span> REPORTS</a></li>
+                <li><a href="calendar.html"><span class="material-symbols-outlined">calendar_month</span> CALENDAR</a></li>
+                <li><a href="settings.html"><span class="material-symbols-outlined">settings</span> SETTINGS</a></li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <header class="header">
+                <h2>Open Positions</h2>
+                <div class="user-info">
+                    <img src="https://i.pravatar.cc/40?img=1" alt="Davies Ruby">
+                    <span>Davies Ruby</span>
+                    <span class="material-symbols-outlined">arrow_drop_down</span>
+                </div>
+            </header>
+            <div class="content-grid">
+                <div class="card card-full-width">
+                    <h3>All Job Postings</h3>
+                    <table class="jobs-table">
+                        <thead>
+                            <tr>
+                                <th>Position</th> <th>Status</th> <th>Applicants</th>
+                                <th>Date Posted</th> <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="job-title">Java Developer</div>
+                                    <div class="job-location">Greenwich, UK</div>
+                                </td>
+                                <td><span class="status-badge status-open">Open</span></td>
+                                <td>15</td>
+                                <td>29 Aug, 2019</td>
+                                <td><button class="btn btn-primary-outline">View Job</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="job-title">Graphic Designer</div>
+                                    <div class="job-location">Remote</div>
+                                </td>
+                                <td><span class="status-badge status-open">Open</span></td>
+                                <td>22</td>
+                                <td>29 Aug, 2019</td>
+                                <td><button class="btn btn-primary-outline">View Job</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="job-title">SEO Specialist</div>
+                                    <div class="job-location">Croydon, UK</div>
+                                </td>
+                                <td><span class="status-badge status-closed">Closed</span></td>
+                                <td>35</td>
+                                <td>26 Aug, 2019</td>
+                                <td><button class="btn btn-primary-outline">View Job</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // --- HIDE PRELOADER (THEMED) ---
+            const loader = document.getElementById('loader');
+            if(loader) {
+                setTimeout(() => {
+                    loader.classList.add('loader-hidden');
+                }, 100); 
+            }
+
+            const userInfo = document.querySelector('.user-info');
+            if(userInfo) {
+                userInfo.addEventListener('click', () => {
+                    alert('Simulating opening user profile settings...');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

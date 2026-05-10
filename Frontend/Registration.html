@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration - JobNexis</title>
+  <style>
+   
+   * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: aliceblue;
+  color: #333;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background:#253a58;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 55px;
+  height: 55px;
+  margin-right: 10px;
+}
+
+.nav-title h3 {
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+}
+
+.nav-title p {
+  font-size: 8px;
+  color: whitesmoke;
+}
+
+
+    /* ===== REGISTRATION CARD ===== */
+    .register-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+      width: 500px;
+      margin-top: 80px; /* space below top bar */
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 80px;
+    }
+
+    .register-card h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #0a3d62;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #1e56a0;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #1e56a0;
+      box-shadow: 0 0 3px rgba(30, 86, 160, 0.4);
+    }
+
+    .register-btn {
+      width: 100%;
+      padding: 12px;
+      background: #1e56a0;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .register-btn:hover {
+      background: #154c8a;
+    }
+
+    .links {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .links a {
+      color: #1e56a0;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .links a:hover {
+      color: #154c8a;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+   <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-left">
+    <img src="logo.png" alt="logo" class="logo">
+      <div class="nav-title">
+        <h3>JobNexis</h3>
+        <p>Training & Placement</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== REGISTRATION CARD ===== -->
+  <div class="register-card">
+    <h2>Student Registration</h2>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" placeholder="Enter full name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email ID</label>
+        <input type="email" id="email" placeholder="Enter email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="Enter phone number" required>
+      </div>
+      <div class="form-group">
+        <label for="course">Course</label>
+        <select id="course" required>
+          <option value="">-- Select Course --</option>
+          <option value="undergraduate">Undergraduate</option>
+          <option value="postgraduate">Postgraduate</option>
+          <option value="diploma">Diploma</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="branch">Branch</label>
+        <select id="branch" required>
+          <option value="">-- Select Branch --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="roll">Registration / Roll Number</label>
+        <input type="text" id="roll" placeholder="Enter registration number" required>
+      </div>
+
+      <!-- Role auto-assigned -->
+      <input type="hidden" id="role" value="student">
+
+      <button type="submit" class="register-btn">Register</button>
+    </form>
+    <div class="links">
+      Already have an account? <a href="Login.html">Login</a>
+    </div>
+  </div>
+
+  <script>
+    const courseBranches = {
+      undergraduate: [
+        "Computer Science Engineering",
+        "Electronics & Communication Engineering",
+        "Electronical & Computer Engineering",
+        "Mechanical Engineering",
+        "Civil Engineering",
+        "Electronical Engineering"
+      ],
+      postgraduate: [
+        "MBA",
+        "MCA",
+        "M.Tech"
+      ],
+      diploma: [
+        "Computer Science Engineering",
+        "Civil Engineering",
+        "Mechanical Engineering",
+        "Electrical Engineering"
+      ]
+    };
+
+    document.getElementById("course").addEventListener("change", function () {
+      const branchSelect = document.getElementById("branch");
+      branchSelect.innerHTML = "<option value=''>-- Select Branch --</option>";
+
+      const selectedCourse = this.value;
+      if (courseBranches[selectedCourse]) {
+        courseBranches[selectedCourse].forEach(branch => {
+          const option = document.createElement("option");
+          option.value = branch.toLowerCase().replace(/\s+/g, "-");
+          option.textContent = branch;
+          branchSelect.appendChild(option);
+        });
+      }
+    });
+
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("fullname").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const phone = document.getElementById("phone").value;
+      const course = document.getElementById("course").value;
+      const branch = document.getElementById("branch").value;
+      const roll = document.getElementById("roll").value;
+
+      if (name && email && password && phone && course && branch && roll) {
+        alert("Student registered successfully!");
+        // TODO: Save data into backend DB
+      } else {
+        alert("Please fill all fields!");
+      }
+    });
+  </script>
+</body>
+</html>

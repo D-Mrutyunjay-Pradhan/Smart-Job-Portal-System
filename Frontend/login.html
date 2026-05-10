@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JobNexis Login</title>
+  <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: aliceblue;
+  color: #333;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background:#253a58;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 55px;
+  height: 55px;
+  margin-right: 10px;
+}
+
+.nav-title h3 {
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+}
+
+.nav-title p {
+  font-size: 8px;
+  color: whitesmoke;
+}
+
+
+    .login-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      text-align: center;
+      border-top: 5px solid #1e56a0;
+      margin-top: 80px; /* space below top bar */
+      margin-left: auto;
+      margin-right: auto;
+
+    }
+
+    .login-card h2 {
+      margin-bottom: 20px;
+      color: #0a3d62;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #1e56a0;
+      font-size: 14px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #1e56a0;
+      box-shadow: 0 0 3px rgba(30, 86, 160, 0.4);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: #1e56a0;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .login-btn:hover {
+      background: #154c8a;
+    }
+
+    .links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .links a {
+      color: #1e56a0;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .links a:hover {
+      color: #154c8a;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+   <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-left">
+    <img src="logo.png" alt="logo" class="logo">
+      <div class="nav-title">
+        <h3>JobNexis</h3>
+        <p>Training & Placement</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== LOGIN CARD ===== -->
+  <div class="login-card">
+    <h2>JobNexis Login</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="role">Select Role</label>
+        <select id="role" required>
+          <option value="">-- Select Role --</option>
+          <option value="student">Student</option>
+          <option value="company">Company</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+    <div class="links">
+      <a href="C:\Users\mruty\Desktop\JobNexis\Code\Frontend\FogottenPassword.html">Forgot Password?</a> |
+      <a href="Registration.html">Register</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const role = document.getElementById("role").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (role && email && password) {
+        alert("Login successful as " + role.toUpperCase());
+        // TODO: Connect to backend authentication here
+      } else {
+        alert("Please fill all fields!");
+      }
+    });
+  </script>
+</body>
+</html>

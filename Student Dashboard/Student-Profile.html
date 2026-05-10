@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Profile</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f9ff;
+      color: #8e8194;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    nav {
+      width: 250px;
+      background: #0a3d62;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      margin: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 12px 15px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      color: white;
+    }
+
+    nav ul li:hover {
+      background: #154c8a;
+    }
+
+    nav ul li.active {
+      background: #1e56a0;
+      color: #60a5fa;
+    }
+
+    nav ul li.logout {
+      margin-top: auto;
+      background: #2563eb;
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      border-radius: 6px;
+      width: 150px;
+      margin: 20px auto;
+      padding: 8px 0;
+      font-size: 14px;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    nav ul li.logout:hover {
+      background: #154c8a;
+    }
+
+    /* Main Section */
+    main {
+      flex: 1;
+      padding: 40px 60px;
+      overflow-y: auto;
+    }
+
+    h2 {
+      color: #154c8a;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: right;
+      gap: 15px;
+      margin-bottom: 20px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .edit-btn {
+      background: #a31616;
+      color: #fff;
+    }
+
+    .save-btn {
+      background: #154c8a;
+      color: #fff;
+    }
+
+    .right-btn {
+      float: right;
+      background: #1e56a0;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .right-btn:hover {
+      background: #154c8a;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li onclick="window.location.href='Student-DashBoard.html'">Dashboard</li>
+        <li class="active">Profile</li>
+        <li onclick="window.location.href='job.html'">Job Portal</li>
+        <li onclick="window.location.href='Student-Setting.html'">Settings</li>
+        <li class="logout" id="logoutBtn">Logout</li>
+      </ul>
+    </nav>
+
+    <main>
+      <h2>Basic Details</h2>
+      <label>Full Name</label><input type="text">
+      <label>Date of Birth</label><input type="date">
+      <label>Gender</label>
+      <select><option>Male</option><option>Female</option><option>Other</option></select>
+      <label>Email</label><input type="email">
+      <label>Phone</label><input type="tel">
+      <label>Address</label><textarea></textarea>
+      <div class="btn-group">
+        <button class="btn edit-btn">Edit</button>
+        <button class="btn save-btn">Save</button>
+      </div>
+
+      <h2>Education</h2>
+      <button class="right-btn">Add New Education</button><br>
+      <label>Current / Most Recent Course</label><input type="text">
+      <label>Institution Name</label><input type="text">
+      <label>University / Registration Number</label><input type="text">
+      <label>Program / Degree</label><input type="text">
+      <label>Branch / Specialization</label><input type="text">
+      <label>Education Type</label>
+      <select>
+        <option>Full Time</option>
+        <option>Part Time</option>
+        <option>Distance</option>
+      </select>
+      <label>Starting Date – Ending Date</label><input type="text">
+      <label>Diploma / 12th Marksheet (Add Document)</label><input type="file">
+      <label>10th Marksheet (Add Document)</label><input type="file">
+      <div class="btn-group">
+        <button class="btn edit-btn">Edit</button>
+        <button class="btn save-btn">Save</button>
+      </div>
+
+      <h2>Internship / Work Experience</h2>
+      <button class="right-btn">Add New Work Experience</button><br>
+      <label>Company Name</label><input type="text">
+      <label>Company Sector</label><input type="text">
+      <label>Job Title</label><input type="text">
+      <label>Job Location</label><input type="text">
+      <label>Position Type</label><input type="text">
+      <label>Start Date – End Date</label><input type="text">
+      <div class="checkbox-group">
+        <input type="checkbox" id="currentWork"><label for="currentWork">Currently working here</label>
+      </div>
+      <div class="btn-group">
+        <button class="btn edit-btn">Edit</button>
+        <button class="btn save-btn">Save</button>
+      </div>
+
+      <h2>Projects</h2>
+      <button class="right-btn">Add New Work Project</button><br>
+      <label>Project Title</label><input type="text">
+      <label>Associated With</label><input type="text">
+      <label>Description</label><textarea></textarea>
+      <label>Project Link</label><input type="url">
+      <div class="btn-group">
+        <button class="btn edit-btn">Edit</button>
+        <button class="btn save-btn">Save</button>
+      </div>
+
+      <h2>Accomplishments</h2>
+      <button class="right-btn">Add New Accomplishment</button><br>
+      <label>Certificate Name</label><input type="text">
+      <label>Issuing Authority</label><input type="text">
+      <label>License Number</label><input type="text">
+      <label>Link</label><input type="url">
+      <label>Expiry Date</label><input type="date">
+      <div class="checkbox-group">
+        <input type="checkbox" id="noExpiry"><label for="noExpiry">This certificate doesn’t expire</label>
+      </div>
+      <label>Description</label><textarea></textarea>
+      <div class="btn-group">
+        <button class="btn edit-btn">Edit</button>
+        <button class="btn save-btn">Save</button>
+      </div>
+
+      <h2>Resume / Social Links</h2>
+      <label>Upload Resume</label><input type="file">
+      <label>LinkedIn</label><input type="url">
+      <label>Instagram</label><input type="url">
+      <label>GitHub</label><input type="url">
+      <label>Whitecaps</label><input type="url">
+      <label>Portfolio Website Link</label><input type="url">
+      <div class="btn-group">
+        <button class="btn edit-btn">Edit</button>
+        <button class="btn save-btn">Save</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Logout Confirmation Popup -->
+  <div class="modal-overlay" id="logoutModal" style="display:none;">
+    <div class="modal">
+      <h3>Are you sure you want to logout?</h3>
+      <button class="cancel-btn" id="cancelLogout">Cancel</button>
+      <button class="confirm-btn" id="confirmLogout">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    const logoutBtn = document.getElementById("logoutBtn");
+    const logoutModal = document.getElementById("logoutModal");
+    const cancelLogout = document.getElementById("cancelLogout");
+    const confirmLogout = document.getElementById("confirmLogout");
+
+    logoutBtn.addEventListener("click", () => {
+      logoutModal.style.display = "flex";
+    });
+
+    cancelLogout.addEventListener("click", () => {
+      logoutModal.style.display = "none";
+    });
+
+    confirmLogout.addEventListener("click", () => {
+      logoutModal.style.display = "none";
+      alert("✅ You have been logged out successfully!");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

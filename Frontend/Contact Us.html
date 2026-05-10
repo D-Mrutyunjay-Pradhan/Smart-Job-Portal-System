@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training & Placement Cell | GIET – Contact Us</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #fff;
+      color: #333;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      padding: 10px 40px;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo {
+      width: 55px;
+      height: 55px;
+      margin-right: 10px;
+    }
+
+    .nav-title h3 {
+      font-size: 30px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .nav-title p {
+      font-size: 9px;
+      color: black;
+    }
+
+    /* Center the nav links */
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      margin: 0 25px;
+      padding: 8px 0;
+      border-bottom: 2px solid transparent;
+      transition: border-bottom-color 0.3s;
+      font-weight: bold;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      border-bottom-color: #007bff;
+      color: #007bff;
+    }
+
+    /* Right spacer to keep logo and buttons aligned visually */
+    .nav-right {
+      width: 80px;
+    }
+
+    /* Contact Section */
+    .contact-section {
+      background: #f7f9fc;
+      min-height: 80vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 10px;
+    }
+
+    .contact-container {
+      background: #fff;
+      max-width: 1000px;
+      width: 100%;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .contact-container h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .contact-container p {
+      text-align: center;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .contact-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: space-between;
+    }
+
+    .contact-form {
+      flex: 1 1 55%;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #00bcd4;
+      box-shadow: 0 0 5px rgba(0,188,212,0.4);
+      outline: none;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #1c438e;
+      color: #fff;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #0097a7;
+    }
+
+    .contact-info {
+      flex: 1 1 35%;
+      background: #f0f8fa;
+      padding: 25px;
+      border-radius: 8px;
+    }
+
+    .contact-info h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .contact-info p {
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+      }
+
+      .nav-links {
+        margin-top: 10px;
+      }
+
+      .contact-wrapper {
+        flex-direction: column;
+      }
+
+      .contact-info {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-left">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQDSE0XxL05END922IRT7oC0E43F-OytwR4Q&s" alt="logo" class="logo">
+      <div class="nav-title">
+        <h3>JobNexis</h3>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <a href="Home.html">Home</a>
+      <a href="Job Portal.html">Job Portal</a>
+      <a href="#" class="active">Contact Us</a>
+    </nav>
+
+    <div class="nav-right"></div>
+  </header>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="contact-container">
+      <h1>Contact Us :</h1>
+      <div class="contact-wrapper">
+        <!-- Contact Form -->
+        <form class="contact-form">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Your Message</label>
+            <textarea id="message" rows="5" placeholder="Write your message here..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn">Send Message</button>
+        </form>
+
+        <!-- Contact Info -->
+        <div class="contact-info">
+          <h2>Our Office Location</h2>
+          <p><strong>Address:</strong> Plot no-635, Behera Sahi, Near SBI Bank, Nayapalli, Bhubaneswar-751017</p>
+          <p><strong>Phone:</strong> +91-9937860139</p>
+          <p><strong>Email:</strong> info@giet.edu.in</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

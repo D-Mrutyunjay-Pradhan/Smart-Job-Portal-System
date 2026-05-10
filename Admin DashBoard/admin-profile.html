@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Profile | JobNexis</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif}
+    body{display:flex;min-height:100vh;background:#f5f9ff;color:#222}
+
+    /* Sidebar */
+    .sidebar{
+      width:230px;background:#0a3d62;color:#fff;
+      padding:20px 10px;display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .sidebar h2{text-align:center;margin-bottom:20px;color:#60a5fa;font-size:20px}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar ul li{margin:6px 0;}
+    .sidebar ul li a{
+      display:block;padding:12px 14px;border-radius:8px;
+      color:white;text-decoration:none;font-weight:500;transition:.2s;
+    }
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active{background:#1e56a0;}
+    .logout-btn{
+      background:#1e56a0;color:#fff;border:none;
+      padding:10px;border-radius:6px;font-weight:600;cursor:pointer;width:100%;margin-top:15px;
+    }
+    .logout-btn:hover{background:#154c8a}
+
+    /* Main */
+    .main{flex:1;padding:22px;overflow:auto}
+    h2{color:#1e56a0;margin-bottom:18px;}
+    .profile-card{background:#fff;padding:16px;border-radius:10px;box-shadow:0 3px 6px rgba(0,0,0,.08);max-width:520px}
+    .profile-card p{margin:6px 0;}
+    .top-actions{display:flex;gap:10px;margin-top:12px}
+
+    .btn{background:#1e56a0;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:600}
+    .btn:hover{background:#154c8a}
+    .btn.danger{background:#dc2626}
+
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+    table{width:100%;border-collapse:collapse;margin-top:10px;background:#fff;border-radius:8px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid #e6edf8;text-align:left}
+    th{background:#1e56a0;color:#fff}
+
+    /* Modals */
+    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,.45);justify-content:center;align-items:center;z-index:1000}
+    .modal-content{background:#fff;padding:20px;border-radius:10px;width:460px;max-width:95%;
+      box-shadow:0 6px 20px rgba(0,0,0,.2)}
+    .modal-content h3{color:#1e56a0;margin-bottom:12px}
+    .modal-content input{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;margin-bottom:10px}
+    .modal-actions{text-align:right}
+
+    /* Center Popups */
+    .center-popup{
+      display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+      z-index:1100;padding:18px;border-radius:10px;
+      box-shadow:0 6px 20px rgba(0,0,0,.2);width:340px;text-align:center
+    }
+    .success{background:#d1fae5;border:2px solid #059669;color:#065f46}
+    .confirm-blue{background:#fff;border:2px solid #1e56a0;color:#1e56a0}
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <h2>Admin Panel</h2>
+      <ul>
+        <li><a href="admin-dashboard.html">Dashboard</a></li>
+        <li><a href="admin-student.html">Students</a></li>
+        <li><a href="admin-recruiter.html">Recruiters</a></li>
+        <li><a href="admin-reports.html">Reports</a></li>
+        <li><a href="admin-profile.html" class="active">Admin Profile</a></li>
+      </ul>
+    </div>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <h2>Admin Profile</h2>
+    <div class="profile-card">
+      <h3>Admin Info</h3>
+      <p><b>Name:</b> <span id="adminNameDisplay">Mrutyunjay Pradhan</span></p>
+      <p><b>Email:</b> <span id="adminEmailDisplay">admin@jobnexis.com</span></p>
+      <p><b>Role:</b> <span id="adminRoleDisplay">Super Admin</span></p>
+      <p><b>Joined:</b> <span id="adminJoinedDisplay">2023-08-01</span></p>
+      <div class="top-actions">
+        <button class="btn" id="editProfileBtn">Edit Profile</button>
+        <button class="btn" id="changePasswordBtn">Change Password</button>
+      </div>
+    </div>
+
+    <!-- SUB-ADMINS TABLE -->
+    <div style="margin-top:18px">
+      <h3>Sub-Admins / Placement Managers</h3>
+      <div class="controls" style="margin-bottom:8px">
+        <button class="btn" id="addSubadminBtn">+ Add Sub-Admin</button>
+        <button class="btn" id="downloadSubadminsCsv">Download Sub-Admins CSV</button>
+      </div>
+      <table id="subadminTable">
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EDIT PROFILE MODAL -->
+  <div class="modal" id="editProfileModal">
+    <div class="modal-content">
+      <h3>Edit Profile</h3>
+      <input id="editAdminName" placeholder="Admin Name" />
+      <input id="editAdminEmail" placeholder="Admin Email" />
+      <div class="modal-actions">
+        <button class="btn" id="saveProfileBtn">Save Changes</button>
+        <button class="btn danger" id="cancelSaveProfileBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHANGE PASSWORD MODAL -->
+  <div class="modal" id="changePasswordModal">
+    <div class="modal-content">
+      <h3>Change Password</h3>
+      <input id="oldPassword" type="password" placeholder="Old Password" />
+      <input id="newPassword" type="password" placeholder="New Password" />
+      <input id="confirmNewPassword" type="password" placeholder="Confirm New Password" />
+      <div class="modal-actions">
+        <button class="btn" id="updatePasswordBtn">Update Password</button>
+        <button class="btn danger" id="cancelChangePasswordBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD SUBADMIN MODAL -->
+  <div class="modal" id="manageSubadminsModal">
+    <div class="modal-content">
+      <h3>Add Sub-Admin</h3>
+      <input id="subName" placeholder="Name" />
+      <input id="subEmail" placeholder="Email" />
+      <input id="subPassword" type="password" placeholder="Password" />
+      <input id="subPasswordConfirm" type="password" placeholder="Confirm Password" />
+      <div class="modal-actions">
+        <button class="btn" id="saveSubadminBtn">Save</button>
+        <button class="btn danger" id="cancelSubadminBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM POPUPS -->
+  <div class="center-popup confirm-blue" id="logoutConfirmBox">
+    <h4>Are you sure you want to logout?</h4>
+    <div style="margin-top:15px;">
+      <button class="btn" id="confirmLogoutBtn">Yes, Logout</button>
+      <button class="btn danger" id="cancelLogoutBtn">Cancel</button>
+    </div>
+  </div>
+
+  <div class="center-popup confirm-blue" id="deleteConfirmBox">
+    <h4 id="deleteConfirmText">Are you sure you want to delete?</h4>
+    <div style="margin-top:15px;">
+      <button class="btn danger" id="confirmDeleteBtn">Yes, Delete</button>
+      <button class="btn" id="cancelDeleteBtn">Cancel</button>
+    </div>
+  </div>
+
+  <div class="center-popup success" id="successPopup">
+    <h4 id="successPopupText">✅ Action completed successfully!</h4>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    let adminInfo={name:"Mrutyunjay Pradhan",email:"admin@jobnexis.com"};
+    let subadmins=[
+      {id:1,name:"Praveen Rao",email:"praveen@jobnexis.com",role:"Placement Manager"},
+      {id:2,name:"Meera Das",email:"meera@jobnexis.com",role:"Placement Manager"}
+    ];
+    let nextSubId=3,deleteTarget=null;
+
+    const adminNameDisplay=document.getElementById("adminNameDisplay");
+    const adminEmailDisplay=document.getElementById("adminEmailDisplay");
+    const editProfileBtn=document.getElementById("editProfileBtn");
+    const changePasswordBtn=document.getElementById("changePasswordBtn");
+
+    const editProfileModal=document.getElementById("editProfileModal");
+    const editAdminName=document.getElementById("editAdminName");
+    const editAdminEmail=document.getElementById("editAdminEmail");
+    const saveProfileBtn=document.getElementById("saveProfileBtn");
+    const cancelSaveProfileBtn=document.getElementById("cancelSaveProfileBtn");
+
+    const changePasswordModal=document.getElementById("changePasswordModal");
+    const oldPassword=document.getElementById("oldPassword");
+    const newPassword=document.getElementById("newPassword");
+    const confirmNewPassword=document.getElementById("confirmNewPassword");
+    const updatePasswordBtn=document.getElementById("updatePasswordBtn");
+    const cancelChangePasswordBtn=document.getElementById("cancelChangePasswordBtn");
+
+    const subadminTableBody=document.querySelector("#subadminTable tbody");
+    const addSubadminBtn=document.getElementById("addSubadminBtn");
+    const manageSubadminsModal=document.getElementById("manageSubadminsModal");
+    const subName=document.getElementById("subName");
+    const subEmail=document.getElementById("subEmail");
+    const subPassword=document.getElementById("subPassword");
+    const subPasswordConfirm=document.getElementById("subPasswordConfirm");
+    const saveSubadminBtn=document.getElementById("saveSubadminBtn");
+    const cancelSubadminBtn=document.getElementById("cancelSubadminBtn");
+    const downloadSubadminsCsv=document.getElementById("downloadSubadminsCsv");
+
+    const successPopup=document.getElementById("successPopup");
+    const successPopupText=document.getElementById("successPopupText");
+
+    const logoutBtn=document.getElementById("logoutBtn");
+    const logoutConfirmBox=document.getElementById("logoutConfirmBox");
+    const confirmLogoutBtn=document.getElementById("confirmLogoutBtn");
+    const cancelLogoutBtn=document.getElementById("cancelLogoutBtn");
+
+    const deleteConfirmBox=document.getElementById("deleteConfirmBox");
+    const deleteConfirmText=document.getElementById("deleteConfirmText");
+    const confirmDeleteBtn=document.getElementById("confirmDeleteBtn");
+    const cancelDeleteBtn=document.getElementById("cancelDeleteBtn");
+
+    function renderSubadmins(){
+      subadminTableBody.innerHTML="";
+      subadmins.forEach(s=>{
+        const tr=document.createElement("tr");
+        tr.innerHTML=`<td>${s.name}</td><td>${s.email}</td><td>${s.role}</td>
+        <td><button class="btn danger small" data-id="${s.id}">Delete</button></td>`;
+        subadminTableBody.appendChild(tr);
+      });
+    }
+    renderSubadmins();
+
+    function openModal(m){m.style.display="flex";}
+    function closeModal(m){m.style.display="none";}
+    function showSuccess(msg){successPopupText.textContent=msg;successPopup.style.display="block";setTimeout(()=>successPopup.style.display="none",2000);}
+
+    // Edit profile
+    editProfileBtn.onclick=()=>{editAdminName.value=adminInfo.name;editAdminEmail.value=adminInfo.email;openModal(editProfileModal);}
+    cancelSaveProfileBtn.onclick=()=>closeModal(editProfileModal);
+    saveProfileBtn.onclick=()=>{
+      adminInfo.name=editAdminName.value;adminInfo.email=editAdminEmail.value;
+      adminNameDisplay.textContent=adminInfo.name;adminEmailDisplay.textContent=adminInfo.email;
+      closeModal(editProfileModal);showSuccess("✅ Profile updated successfully!");
+    };
+
+    // Change password
+    changePasswordBtn.onclick=()=>openModal(changePasswordModal);
+    cancelChangePasswordBtn.onclick=()=>closeModal(changePasswordModal);
+    updatePasswordBtn.onclick=()=>{
+      if(newPassword.value!==confirmNewPassword.value){alert("Passwords do not match!");return;}
+      closeModal(changePasswordModal);showSuccess("✅ Password changed successfully!");
+    };
+
+    // Subadmins
+    addSubadminBtn.onclick=()=>{subName.value=subEmail.value=subPassword.value=subPasswordConfirm.value="";openModal(manageSubadminsModal);}
+    cancelSubadminBtn.onclick=()=>closeModal(manageSubadminsModal);
+    saveSubadminBtn.onclick=()=>{
+      if(!subName.value||!subEmail.value||!subPassword.value||!subPasswordConfirm.value){alert("Please fill all fields.");return;}
+      if(subPassword.value!==subPasswordConfirm.value){alert("Passwords do not match!");return;}
+      subadmins.push({id:nextSubId++,name:subName.value,email:subEmail.value,role:"Placement Manager"});
+      renderSubadmins();closeModal(manageSubadminsModal);showSuccess("✅ Sub-Admin added successfully!");
+    };
+
+    subadminTableBody.onclick=e=>{
+      const btn=e.target.closest("button");if(!btn)return;
+      const id=+btn.dataset.id;
+      const target=subadmins.find(s=>s.id===id);
+      if(target){deleteTarget=id;deleteConfirmText.textContent=`Delete ${target.name}?`;openModal(deleteConfirmBox);}
+    };
+
+    confirmDeleteBtn.onclick=()=>{subadmins=subadmins.filter(s=>s.id!==deleteTarget);renderSubadmins();closeModal(deleteConfirmBox);showSuccess("✅ Sub-Admin deleted successfully!");};
+    cancelDeleteBtn.onclick=()=>closeModal(deleteConfirmBox);
+
+    // Logout confirmation
+    logoutBtn.onclick=()=>openModal(logoutConfirmBox);
+    cancelLogoutBtn.onclick=()=>closeModal(logoutConfirmBox);
+    confirmLogoutBtn.onclick=()=>{closeModal(logoutConfirmBox);window.location.href="login.html";};
+
+    // Highlight active sidebar link
+    const currentPage=window.location.pathname.split("/").pop();
+    document.querySelectorAll(".sidebar a").forEach(link=>{
+      if(link.getAttribute("href")===currentPage){link.classList.add("active");}
+    });
+
+    // Close modals when clicking outside
+    document.addEventListener("click",e=>[editProfileModal,changePasswordModal,manageSubadminsModal,deleteConfirmBox,logoutConfirmBox]
+      .forEach(m=>{if(m.style.display==="flex"&&e.target===m)closeModal(m)}));
+  </script>
+</body>
+</html>
